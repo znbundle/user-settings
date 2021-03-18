@@ -11,6 +11,7 @@ abstract class BaseSettingsController extends Controller
 {
 
     public $navItems = [];
+    protected $viewAlias;
 
     /** @var BreadcrumbWidget */
     protected $breadcrumbWidget;
@@ -32,11 +33,15 @@ abstract class BaseSettingsController extends Controller
 
     public function render($view, $params = [])
     {
-        $controllerClassName = get_called_class();
-        $moduleViewsPath = str_replace(['Controllers', '\\'], ['views', '/'], $controllerClassName);
-        $moduleViewsPath = dirname($moduleViewsPath);
-        $controllerViewsPath = $moduleViewsPath . '/' . $this->id;
-        $view = '@'.$controllerViewsPath.'/' . $view;
+        if($this->viewAlias) {
+            $view = $this->viewAlias;
+        } else {
+            $controllerClassName = get_called_class();
+            $moduleViewsPath = str_replace(['Controllers', '\\'], ['views', '/'], $controllerClassName);
+            $moduleViewsPath = dirname($moduleViewsPath);
+            $controllerViewsPath = $moduleViewsPath . '/' . $this->id;
+            $view = '@'.$controllerViewsPath.'/' . $view;
+        }
         return parent::render($view, $params);
     }
 }
